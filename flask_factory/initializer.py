@@ -51,9 +51,23 @@ def discover_ext_name(name):
     'sqlite3'
     >>> discover_ext_name('flask_mongokit')
     'mongokit'
+    >>> discover_ext_name('flask.ext.sqlalchemy._compat')
+    'sqlalchemy'
+    >>> discover_ext_name('flaskext.login')
+    'login'
 
     """
-    top_level_pkg_name = name.split('.', 1)[0]
-    prefix, ext_name = top_level_pkg_name.split('_', 1)
-    assert prefix == 'flask'
-    return ext_name
+    if name.startswith('flask_'):
+        top_level_pkg_name = name.split('.', 1)[0]
+        prefix, ext_name = top_level_pkg_name.split('_', 1)
+        return ext_name
+    elif name.startswith('flask.ext.'):
+        mod_path = name.split('.', 3)
+        ext_name = mod_path[2]
+        return ext_name
+    elif name.startswith('flaskext.'):
+        mod_path = name.split('.', 2)
+        ext_name = mod_path[1]
+        return ext_name
+    else:
+        raise ValueError(name)
