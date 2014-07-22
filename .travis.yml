@@ -9,8 +9,6 @@ install:
   - pip install -e .[test]
   - pip install coverage coveralls
 script:
-  - export PYTHON="python"
-  - if [[ $TRAVIS_PYTHON_VERSION == '3.4' ]]; then export PYTHON="coverage run"; fi
-  - $PYTHON setup.py test
+  - coverage run setup.py test
 after_success:
-  - if [[ $TRAVIS_PYTHON_VERSION == '3.4' ]]; then coveralls; fi
+  - coveralls
