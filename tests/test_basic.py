@@ -7,6 +7,7 @@ def test_basic():
     factory = Factory(__name__)
     app = factory()
     assert type(app) == Flask
+    assert app.import_name == factory.import_name
 
 
 def test_with_config():
