@@ -1,0 +1,16 @@
+language: python
+python:
+  - "2.6"
+  - "2.7"
+  - "pypy"
+  - "3.3"
+  - "3.4"
+install:
+  - pip install -e .[test]
+  - pip install coverage coveralls
+script:
+  - export PYTHON="python"
+  - if [[ $TRAVIS_PYTHON_VERSION == '3.4' ]] then export PYTHON="coverage run"; fi
+  - $PYTHON setup.py test
+after_success:
+  coveralls
