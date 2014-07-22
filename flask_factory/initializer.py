@@ -55,6 +55,10 @@ def discover_ext_name(name):
     'sqlalchemy'
     >>> discover_ext_name('flaskext.login')
     'login'
+    >>> discover_ext_name('django_extensions.admin')
+    Traceback (most recent call last):
+        ...
+    ValueError: django_extensions.admin
 
     """
     if name.startswith('flask_'):
