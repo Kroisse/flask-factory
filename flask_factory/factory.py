@@ -3,10 +3,11 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 """
-import logging
 from flask import Flask, current_app
 from werkzeug.datastructures import ImmutableDict
 from werkzeug.local import LocalProxy
+
+from flask.ext.factory.initializer import Initializer, BasicInitializer, Extension
 
 
 def _lookup_ext_instances():
@@ -15,24 +16,6 @@ def _lookup_ext_instances():
 
 
 extensions = LocalProxy(_lookup_ext_instances)
-
-
-def discover_ext_name(name):
-    """
-
-    :param name:
-    :return:
-
-    >>> discover_ext_name('flask_sqlite3.base')
-    'sqlite3'
-    >>> discover_ext_name('flask_mongokit')
-    'mongokit'
-
-    """
-    top_level_pkg_name = name.split('.', 1)[0]
-    prefix, ext_name = top_level_pkg_name.split('_', 1)
-    assert prefix == 'flask'
-    return ext_name
 
 
 class ImmutableNamespace(ImmutableDict):
@@ -45,25 +28,30 @@ class Factory(object):
         self.import_name = import_name
         self.app_cls = cls
         self.app_ctor_kwargs = kwargs
-        self._init_funcs = []
+        self._initializers = []
 
-    def add_extension(self, ext, *args, **kwargs):
-        index = len(self._init_funcs)
-        self._init_funcs.append({
-            'type': 'ext',
-            'ext_cls': ext,
-            'ext_init_params': (args, kwargs),
-            'func': None,
-        })
+    def _add_extension(self, ext, args, kwargs):
+        initializer = Extension(ext, args=args, kwargs=kwargs)
+        self._initializers.append(initializer)
 
         def decorator(f):
-            self._init_funcs[index]['func'] = f
+            initializer.init_func = f
             return f
         return decorator
 
-    def add_initializer(self, f):
-        self._init_funcs.append({'type': 'init', 'func': f})
-        return f
+    def step(self, initializer, *args, **kwargs):
+        additional_args = bool(args or kwargs)
+        if isinstance(initializer, Initializer) and not additional_args:
+            self._initializers.append(initializer)
+            return
+        elif callable(initializer) and not additional_args:
+            self._initializers.append(BasicInitializer(initializer))
+            return initializer
+        elif isinstance(initializer, type) and \
+                hasattr(initializer, 'init_app'):
+            # assume `init` is a Flask extension class
+            return self._add_extension(initializer, args, kwargs)
+        raise TypeError
 
     def __call__(self, config=None):
         app = self.app_cls(self.import_name, **self.app_ctor_kwargs)
@@ -72,24 +60,8 @@ class Factory(object):
         ext_namespace = app.extensions['factory'] = {}
         if config:
             app.config.update(config)
-        ext_instances = {}
-        for i in self._init_funcs:
-            ty = i['type']
-            if ty == 'init':
-                i['func'](app)
-            elif ty == 'ext':
-                ext_cls = i['ext_cls']
-                args, kwargs = i['ext_init_params']
-                inst = ext_cls(app, *args, **kwargs)
-                inst.init_app(app)
-                f = i.get('func')
-                if callable(f):
-                    f(app, inst)
-                ext_name = discover_ext_name(ext_cls.__module__)
-                ext_instances[ext_name] = inst
-            else:
-                log = logging.getLogger(__name__ + '.Factory.__call__')
-                log.debug('Invalid data: %r', i)
-                raise RuntimeError()
+        for i in self._initializers:
+            i.init_app(app)
+        ext_instances = ext_namespace.get('ext_instances', {})
         ext_namespace['ext_instances'] = ImmutableNamespace(ext_instances)
         return app
