@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-"""flask.ext.factory.factory
-~~~~~~~~~~~~~~~~~~~~~~~~~
+"""flask_factory.factory
+~~~~~~~~~~~~~~~~~~~~~
 
 """
 from flask import Flask, current_app
 from werkzeug.datastructures import ImmutableDict
 from werkzeug.local import LocalProxy
 
-from flask.ext.factory.initializer import Initializer, BasicInitializer, Extension
+from .initializer import Initializer, BasicInitializer, Extension
 
 
 def _lookup_ext_instances():

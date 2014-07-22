@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Flask
-from flask.ext.factory import Factory
+from flask_factory import Factory
 
 
 def test_basic():

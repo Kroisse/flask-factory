@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-"""flask.ext.factory
-~~~~~~~~~~~~~~~~~
+"""flask_factory
+~~~~~~~~~~~~~
 
 """
 from .factory import Factory

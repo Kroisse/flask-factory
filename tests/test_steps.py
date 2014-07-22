@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import pytest
-from flask.ext.factory import Factory
-from flask.ext.factory.initializer import Extension
+from flask_factory import Factory
+from flask_factory.initializer import Extension
 
 
 @pytest.fixture
