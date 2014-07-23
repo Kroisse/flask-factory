@@ -67,7 +67,7 @@ class PyTest(TestCommand):
 
 setup(
     name='Flask-Factory',
-    version='0.1.0',
+    version='0.1.0dev',
     author='Eunchong Yu',
     author_email='kroisse@gmail.com',
     maintainer='Eunchong Yu',
