@@ -2,21 +2,12 @@
 import pytest
 from flask_factory import Factory
 from flask_factory.initializer import Extension
+from flask_sample import SampleExtension
 
 
 @pytest.fixture
 def create_app():
     return Factory(__name__)
-
-
-class SampleExtension(object):
-    def __init__(self, app=None):
-        self.app = app
-        if app is not None:
-            self.init_app(app)
-
-    def init_app(self, app):
-        app.config.setdefault('SAMPLE_EXTENSION', 42)
 
 
 def test_simple_step(create_app):
