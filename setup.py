@@ -25,6 +25,7 @@ dependency_links = [
 ]
 
 classifiers = [
+    'Development Status :: 2 - Pre-Alpha',
     'Environment :: Web Environment',
     'Intended Audience :: Developers',
     'License :: OSI Approved :: BSD License',
