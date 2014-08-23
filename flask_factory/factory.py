@@ -30,31 +30,16 @@ class Factory(object):
         self.app_ctor_kwargs = kwargs
         self._initializers = []
 
-    def _add_extension(self, ext, args, kwargs):
-        initializer = Extension(ext, args=args, kwargs=kwargs)
-        self._initializers.append(initializer)
-
-        def decorator(f):
-            initializer.init_func = f
-            return f
-        return decorator
-
-    def step(self, initializer, *args, **kwargs):
-        additional_args = bool(args or kwargs)
-        if isinstance(initializer, Initializer) and not additional_args:
+    def step(self, initializer):
+        if isinstance(initializer, Initializer):
             self._initializers.append(initializer)
-            return
         elif isinstance(initializer, str):
             self._initializers.append(DeferredAction(initializer))
-            return
-        elif callable(initializer) and not additional_args:
+        elif callable(initializer):
             self._initializers.append(Action(initializer))
             return initializer
-        elif isinstance(initializer, type) and \
-                hasattr(initializer, 'init_app'):
-            # assume `init` is a Flask extension class
-            return self._add_extension(initializer, args, kwargs)
-        raise TypeError
+        else:
+            raise TypeError
 
     def __call__(self, config=None):
         app = self.app_cls(self.import_name, **self.app_ctor_kwargs)
