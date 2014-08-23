@@ -13,7 +13,7 @@ class Initializer(with_metaclass(ABCMeta)):
         raise NotImplementedError
 
 
-class BasicInitializer(Initializer):
+class Action(Initializer):
     def __init__(self, f):
         self._func = f
 

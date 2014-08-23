@@ -7,7 +7,7 @@ from flask import Flask, current_app
 from werkzeug.datastructures import ImmutableDict
 from werkzeug.local import LocalProxy
 
-from .initializer import Initializer, BasicInitializer, Extension
+from .initializer import Initializer, Action, Extension
 
 
 def _lookup_ext_instances():
@@ -45,7 +45,7 @@ class Factory(object):
             self._initializers.append(initializer)
             return
         elif callable(initializer) and not additional_args:
-            self._initializers.append(BasicInitializer(initializer))
+            self._initializers.append(Action(initializer))
             return initializer
         elif isinstance(initializer, type) and \
                 hasattr(initializer, 'init_app'):
