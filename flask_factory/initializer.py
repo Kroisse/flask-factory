@@ -3,6 +3,8 @@ from abc import ABCMeta, abstractmethod
 
 from flask._compat import with_metaclass
 
+from flask_factory.utils import import_string
+
 
 __all__ = ['Initializer', 'Extension']
 
@@ -19,6 +21,15 @@ class Action(Initializer):
 
     def init_app(self, app):
         self._func(app)
+
+
+class DeferredAction(Initializer):
+    def __init__(self, path):
+        self._path = path
+
+    def init_app(self, app):
+        func = import_string(self._path)
+        func(app)
 
 
 class Extension(Initializer):
