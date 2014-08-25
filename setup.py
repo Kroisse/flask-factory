@@ -10,6 +10,9 @@ requirements = [
     'Flask >= 0.10.1',
 ]
 
+if sys.version_info < (2, 7):
+    requirements.append('importlib')
+
 extras_require = {
     'doc': [
         'Sphinx',
