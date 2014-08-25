@@ -7,7 +7,7 @@ from flask import Flask, current_app
 from werkzeug.datastructures import ImmutableDict
 from werkzeug.local import LocalProxy
 
-from .initializer import Initializer, Action, DeferredAction, Extension
+from .initializer import Initializer, Action, DeferredAction
 
 
 def _lookup_ext_instances():
