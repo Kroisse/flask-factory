@@ -3,7 +3,7 @@ from abc import ABCMeta, abstractmethod
 
 from flask._compat import with_metaclass
 
-from flask_factory.utils import import_string
+from flask_factory.utils import import_string, get_nearest_package_name
 
 
 __all__ = ['Initializer', 'Extension']
@@ -28,7 +28,8 @@ class DeferredAction(Initializer):
         self._path = path
 
     def init_app(self, app):
-        func = import_string(self._path)
+        package = get_nearest_package_name(app.import_name)
+        func = import_string(self._path, package=package)
         func(app)
 
 
