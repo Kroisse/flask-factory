@@ -39,6 +39,17 @@ Install with :program:`pip` or :program:`easy_install`:
 API
 ---
 
+Factory object
+~~~~~~~~~~~~~~
+
+.. autoclass:: flask_factory.Factory
+
+
+Initializers
+~~~~~~~~~~~~
+
+.. automodule:: flask_factory.initializer
+
 
 .. toctree::
     :maxdepth: 2

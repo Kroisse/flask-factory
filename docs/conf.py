@@ -21,6 +21,7 @@ import os
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
 
+sys.path.append(os.path.abspath('..'))
 sys.path.append(os.path.abspath('_themes'))
 
 # -- General configuration ------------------------------------------------
@@ -274,3 +275,5 @@ intersphinx_mapping = {
     'python': ('http://docs.python.org/', None),
     'flask': ('http://flask.pocoo.org/docs/', None),
 }
+
+autodoc_default_flags = ['members']

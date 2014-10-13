@@ -24,6 +24,8 @@ class ImmutableNamespace(ImmutableDict):
 
 
 class Factory(object):
+    """The application factory for Flask"""
+
     def __init__(self, import_name, cls=Flask, **kwargs):
         self.import_name = import_name
         self.app_cls = cls
@@ -31,12 +33,14 @@ class Factory(object):
         self._initializers = []
 
     def step(self, initializer):
+        """Register an initializer"""
         if isinstance(initializer, Initializer):
             self._initializers.append(initializer)
         elif isinstance(initializer, str):
             self._initializers.append(DeferredAction(initializer))
         elif callable(initializer):
             self._initializers.append(Action(initializer))
+            # acts as a decorator
             return initializer
         else:
             raise TypeError
